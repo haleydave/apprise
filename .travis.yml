@@ -25,11 +25,15 @@ matrix:
       env: TOXENV=pypy
     - python: "pypy3.5-7.0"
       env: TOXENV=pypy3
+      # Last supported cryptography version that can link against OpenSSL v1.02 is 3.2.1 and
+      # requires this global variable to work; version is enforced below
+      env: CRYPTOGRAPHY_ALLOW_OPENSSL_102=1
 
 install:
   - pip install babel
   - pip install .
   - pip install codecov
+  - if [[ $TRAVIS_PYTHON_VERSION == 'pypy3' ]]; then travis_retry pip install cryptography==3.2.1; fi
   - pip install -r dev-requirements.txt
   - pip install -r requirements.txt
   - if [[ $TRAVIS_PYTHON_VERSION != 'pypy'* ]]; then travis_retry pip install dbus-python; fi
